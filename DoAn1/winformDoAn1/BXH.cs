@@ -1,52 +1,62 @@
-﻿    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Data.SqlClient;        
-    using System.Drawing;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Windows.Forms;
+﻿using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Windows.Forms;
 
-    namespace winformDoAn1
+namespace winformDoAn1
+{
+    public partial class BXH : Form
     {
-        public partial class BXH : Form
-        {
-            string connectionString = @"Data Source=localhost;Initial Catalog=BXHQuizGame;Integrated Security=True";
-            public BXH()
-            {
-                InitializeComponent();
-            }
-            private void FormBXH_Load(object sender, EventArgs e)
-            {
-                HienThiBangXepHang();
-            }
+        // 🔗 Chuỗi kết nối đến đúng database đã có VIEW
+        string connectionString = @"Data Source=localhost;Initial Catalog=DoAnQuizGame;Integrated Security=True";
 
-            void HienThiBangXepHang()
+        public BXH()
+        {
+            InitializeComponent();
+        }
+
+        private void BXH_Load(object sender, EventArgs e)
+        {
+            HienThiBangXepHang();
+        }
+
+        void HienThiBangXepHang()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                try
                 {
                     conn.Open();
-                    string query = @"SELECT TOP 10 TenNguoiChoi, Diem, NgayGio 
-                                     FROM XepHang 
-                                     ORDER BY Diem DESC, NgayGio ASC";
+                    string query = "SELECT * FROM V_XepHang"; // gọi view
 
                     SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
 
                     dgvBXH.DataSource = dt;
+
+                    // Tùy chỉnh hiển thị
+                    dgvBXH.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                     dgvBXH.Columns[0].HeaderText = "Tên người chơi";
                     dgvBXH.Columns[1].HeaderText = "Điểm";
                     dgvBXH.Columns[2].HeaderText = "Ngày giờ";
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi hiển thị BXH: " + ex.Message);
+                }
             }
-
-            private void btnDong_Click(object sender, EventArgs e)
-            {
-            this.Hide();
         }
+
+        private void btnDong_Click(object sender, EventArgs e)
+        {
+            this.Close(); // đóng form BXH
+        }
+
+        private void dgvBXH_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
+}
 

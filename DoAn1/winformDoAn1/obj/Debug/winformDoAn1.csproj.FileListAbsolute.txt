@@ -1,7 +1,9 @@
-D:\DoAn1\winformDoAn1\bin\Debug\winformDoAn1.exe
 D:\DoAn1\winformDoAn1\bin\Debug\winformDoAn1.exe.config
+D:\DoAn1\winformDoAn1\bin\Debug\winformDoAn1.exe
+D:\DoAn1\winformDoAn1\bin\Debug\winformDoAn1.pdb
 D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.csproj.AssemblyReference.cache
 D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.BXH.resources
+D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.Nhập_tên.resources
 D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.Trang_chủ.resources
 D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.Trochoidovui.resources
 D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.Properties.Resources.resources
@@ -9,5 +11,3 @@ D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.csproj.GenerateResource.cache
 D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.csproj.CoreCompileInputs.cache
 D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.exe
 D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.pdb
-D:\DoAn1\winformDoAn1\bin\Debug\winformDoAn1.pdb
-D:\DoAn1\winformDoAn1\obj\Debug\winformDoAn1.Nhập_tên.resources

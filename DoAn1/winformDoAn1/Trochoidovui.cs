@@ -2,6 +2,9 @@
 using System.Data;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Collections.Generic;
+using System.Linq;
+using System.Drawing;
 
 namespace winformDoAn1
 {
@@ -86,46 +89,97 @@ namespace winformDoAn1
                 return;
             }
 
-            DataRow row = cauHoiTable.Rows[cauHoiIndex];
-            lblCauHoi.Text = row["NoiDung"].ToString();
-            btnA.Text = "A. " + row["A"].ToString();
-            btnB.Text = "B. " + row["B"].ToString();
-            btnC.Text = "C. " + row["C"].ToString();
-            btnD.Text = "D. " + row["D"].ToString();
+             DataRow row = cauHoiTable.Rows[cauHoiIndex];
+             lblCauHoi.Text = row["NoiDung"].ToString();
+             var dapAnGoc = new List<(string Ma, string NoiDung)>
+              {
+               ("A", row["A"].ToString()),
+               ("B", row["B"].ToString()),
+               ("C", row["C"].ToString()),
+               ("D", row["D"].ToString())
+              };
+
+            // Xáo trộn
+            Random rnd = new Random();
+            var dapAnXaoTron = dapAnGoc.OrderBy(x => rnd.Next()).ToList();
+
+            // Gán vào các nút
+            btnA.Text = "A. " + dapAnXaoTron[0].NoiDung;
+            btnB.Text = "B. " + dapAnXaoTron[1].NoiDung;
+            btnC.Text = "C. " + dapAnXaoTron[2].NoiDung;
+            btnD.Text = "D. " + dapAnXaoTron[3].NoiDung;
+
+            // Lưu lại mã gốc của đáp án đúng sau khi xáo trộn
+            string dapAnDungGoc = row["DapAn"].ToString(); // Ví dụ: "A"
+            string noiDungDung = row[dapAnDungGoc].ToString(); // row["A"], row["B"]...
+
+            // Xác định đáp án đúng mới là nút nào (sau khi xáo trộn)
+            if (dapAnXaoTron[0].NoiDung == noiDungDung) btnA.Tag = "True";
+            else btnA.Tag = "False";
+
+            if (dapAnXaoTron[1].NoiDung == noiDungDung) btnB.Tag = "True";
+            else btnB.Tag = "False";
+
+            if (dapAnXaoTron[2].NoiDung == noiDungDung) btnC.Tag = "True";
+            else btnC.Tag = "False";
+
+            if (dapAnXaoTron[3].NoiDung == noiDungDung) btnD.Tag = "True";
+            else btnD.Tag = "False";
 
             lblKetQua.Text = "";
             lblDiem.Text = $"Điểm: {diem}";
 
             btnA.Enabled = btnB.Enabled = btnC.Enabled = btnD.Enabled = true;
             btnA.Visible = btnB.Visible = btnC.Visible = btnD.Visible = true;
+            btnA.BackColor = Color.White;
+            btnB.BackColor = Color.White;
+            btnC.BackColor = Color.White;
+            btnD.BackColor = Color.White;
         }
 
-        void KiemTraDapAn(string dapAnChon)
+        void KiemTraDapAn(Button btnChon)
         {
             if (cauHoiTable == null || cauHoiIndex >= cauHoiTable.Rows.Count)
                 return;
 
-            DataRow row = cauHoiTable.Rows[cauHoiIndex];
-            string dapAnDung = row["DapAn"].ToString();
+            bool laDapAnDung = btnChon.Tag != null && btnChon.Tag.ToString() == "True";
 
-            if (dapAnChon == dapAnDung)
+            if (laDapAnDung)
             {
+                btnChon.BackColor = Color.Lime;
                 lblKetQua.Text = "✅ Chính xác!";
                 diem++;
             }
             else
             {
-                lblKetQua.Text = "❌ Sai rồi! Đáp án đúng là: " + dapAnDung;
+                btnChon.BackColor = Color.Red;
+                if (btnA.Tag != null && btnA.Tag.ToString() == "True") btnA.BackColor = Color.Lime;
+                if (btnB.Tag != null && btnB.Tag.ToString() == "True") btnB.BackColor = Color.Lime;
+                if (btnC.Tag != null && btnC.Tag.ToString() == "True") btnC.BackColor = Color.Lime;
+                if (btnD.Tag != null && btnD.Tag.ToString() == "True") btnD.BackColor = Color.Lime;
+                Button[] buttons = { btnA, btnB, btnC, btnD };
+                string dapAnDungText = "";
+
+                foreach (Button btn in buttons)
+                {
+                    if (btn.Tag != null && btn.Tag.ToString() == "True")
+                    {
+                        dapAnDungText = btn.Text; // Lấy nguyên dòng, ví dụ "A. SELECT"
+                        break;
+                    }
+                }
+
+                lblKetQua.Text = "❌ Sai rồi! Đáp án đúng là: " + dapAnDungText;
             }
 
             btnA.Enabled = btnB.Enabled = btnC.Enabled = btnD.Enabled = false;
             lblDiem.Text = $"Điểm: {diem}";
         }
 
-        private void btnA_Click(object sender, EventArgs e) => KiemTraDapAn("A");
-        private void btnB_Click(object sender, EventArgs e) => KiemTraDapAn("B");
-        private void btnC_Click(object sender, EventArgs e) => KiemTraDapAn("C");
-        private void btnD_Click(object sender, EventArgs e) => KiemTraDapAn("D");
+        private void btnA_Click(object sender, EventArgs e) => KiemTraDapAn(btnA);
+        private void btnB_Click(object sender, EventArgs e) => KiemTraDapAn(btnB);
+        private void btnC_Click(object sender, EventArgs e) => KiemTraDapAn(btnC);
+        private void btnD_Click(object sender, EventArgs e) => KiemTraDapAn(btnD);
 
         private void btnCauTiepTheo_Click(object sender, EventArgs e)
         {
@@ -148,16 +202,6 @@ namespace winformDoAn1
             diem = 0;
             LoadCauHoi();
             HienThiCauHoi();
-        }
-
-        private void lblKetQua_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblCauHoi_Click(object sender, EventArgs e)
-        {
-
         }
         void CapNhatDiem(int diem, string tenNguoiChoi)
         {
@@ -214,6 +258,14 @@ namespace winformDoAn1
 
             // Sau đó có thể trở lại menu hoặc đóng game
             this.Close(); // hoặc mở lại form menu
+        }
+        private void lblCauHoi_Click(object sender, EventArgs e)
+        {
+        
+        }
+        private void lblKetQua_Click(object sender, EventArgs e)
+        {
+
         }
         private void btnThoat_Click(object sender, EventArgs e)
         {

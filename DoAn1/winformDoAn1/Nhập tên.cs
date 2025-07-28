@@ -35,10 +35,5 @@ namespace winformDoAn1
         {
 
         }
-
-        private void btnLuu_Click_1(object sender, EventArgs e)
-        {
-
-        }
     }
 }
